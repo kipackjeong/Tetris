@@ -1,0 +1,11 @@
+C:\Users\JGB\source\repos\Tetris\bin\Release\Tetris.exe.config
+C:\Users\JGB\source\repos\Tetris\bin\Release\Tetris.exe.manifest
+C:\Users\JGB\source\repos\Tetris\bin\Release\Tetris.application
+C:\Users\JGB\source\repos\Tetris\bin\Release\Tetris.exe
+C:\Users\JGB\source\repos\Tetris\bin\Release\Tetris.pdb
+C:\Users\JGB\source\repos\Tetris\obj\Release\Tetris.csprojAssemblyReference.cache
+C:\Users\JGB\source\repos\Tetris\obj\Release\Tetris.csproj.CoreCompileInputs.cache
+C:\Users\JGB\source\repos\Tetris\obj\Release\Tetris.exe.manifest
+C:\Users\JGB\source\repos\Tetris\obj\Release\Tetris.application
+C:\Users\JGB\source\repos\Tetris\obj\Release\Tetris.exe
+C:\Users\JGB\source\repos\Tetris\obj\Release\Tetris.pdb

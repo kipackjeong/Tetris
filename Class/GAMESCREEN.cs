@@ -119,15 +119,15 @@ public class GAMESCREEN
         Console.Write(tetris.tetrisTitle);
 
 
-        //// Key buttons
-        //for (int y = 0; y < keyButtons.Length; ++y)
-        //{
-        //    Console.SetCursorPosition(44, 30+ y);
-        //    for (int x = 0; x < keyButtons[y].Length; ++x)
-        //    {
-        //        Console.Write(keyButtons[y][x]);
-        //    }
-        //}
+        // Key buttons
+        for (int y = 0; y < keyButtons.Length; ++y)
+        {
+            Console.SetCursorPosition(44, 30 + y);
+            for (int x = 0; x < keyButtons[y].Length; ++x)
+            {
+                Console.Write(keyButtons[y][x]);
+            }
+        }
     }
 
     public void GameOver()

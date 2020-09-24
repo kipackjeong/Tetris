@@ -36,8 +36,8 @@ public class ACCClass : TETRISSCREEN
                 Parent.SetBlock(y + 1, x, BlockList[y][x]);
             }
         }
-        //Console.SetCursorPosition(43,25);
-        //Console.WriteLine("Score: " + Score);
+        Console.SetCursorPosition(43, 25);
+        Console.WriteLine("Score: " + Score);
     }
 
     public List<int> Empty()

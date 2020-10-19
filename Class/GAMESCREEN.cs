@@ -1,160 +1,113 @@
 ﻿using System;
-using System.Collections;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading;
-using System.Xml;
+using System.Collections.Generic;
+using System.Xml.Schema;
 
-public class GAMESCREEN
+public class GameScreen
 {
-    private string[][] ScreenBoard;
-    public StringBuilder HorBorder = new StringBuilder();
-    public StringBuilder VerBorder = new StringBuilder();
-    public StringBuilder HorOuter = new StringBuilder();
-    public StringBuilder VerOuter = new StringBuilder();
-    public Alphabet tetris = new Alphabet();
-    public bool  RunGame = true;
+    //field
+    public List<List<string>> BlockList = new List<List<string>>();
+    public Random randomNum = new Random();
+    public int ScrSizeX;
+    public int ScrSizeY;
 
-    public string[][] keyButtons = new string[][]
+
+    // Render
+    public virtual void Render() // y , x render screen.
     {
-        new string[]{" "," "," ","","W" },
-        new string[]{" "," "," ","▲"},
-        new string[]{"","A","◀"," ", " ","▶", "D"},
-        new string[]{" "," "," ","▼"},
-        new string[]{"  Space"},
-    };
-
-
-    public GAMESCREEN()
-    {
-
-        BuildBorders();
-        Console.WindowHeight = 40;
-    }
-
-    public void BuildBorders()
-    {
-        for (int i = 0; i < 22; i++)
+        for (int y = 0; y < BlockList.Count; ++y)
         {
-            VerBorder.Append("▧");
-        }
-
-        for (int i = 0; i < 10; i++)
-        {
-            HorBorder.Append("▧");
-        }
-
-        for (int i = 0; i < 22; i++)
-        {
-            VerOuter.Append("▧");
-        }
-
-        for (int i = 0; i < 32; i++)
-        {
-            HorOuter.Append("▧");
-        }
-
-    }
-    public void renderScreen()
-    {
-        /* 
-         *  Border
-        */
-        // horizontal
-        Console.ForegroundColor = ConsoleColor.Cyan;
-        Console.SetCursorPosition(10, 19);
-        Console.WriteLine(HorBorder);
-        Console.ForegroundColor = ConsoleColor.Cyan;
-        Console.SetCursorPosition(10,40);
-        Console.WriteLine(HorBorder);
-        
-
-        // vertical
-        for (int i = 0; i < VerBorder.Length; i++)
-        {
-            Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.SetCursorPosition(8, 19 + i);
-            Console.WriteLine(VerBorder[i]);
-        }
-
-        for (int i = 0; i < VerBorder.Length; i++)
-        {
-            Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.SetCursorPosition(30, 19 + i);
-            Console.WriteLine(VerBorder[i]);
-        }
-        /* 
-        *  Outer
-        */
-        // horizontal
-        Console.ForegroundColor = ConsoleColor.White;
-        Console.SetCursorPosition(0, 18);
-        Console.WriteLine(HorOuter);
-        Console.ForegroundColor = ConsoleColor.White;
-        Console.SetCursorPosition(0, 18 + VerBorder.Length);
-        Console.WriteLine(HorOuter);
-
-
-        // vertical
-        // left
-        for (int i = 0; i < VerOuter.Length; i++)
-        {
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.SetCursorPosition(0, 19 + i);
-            Console.WriteLine(VerOuter[i]);
-        }
-        // right
-        for (int i = 0; i < VerBorder.Length; i++)
-        {
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.SetCursorPosition(62, 19 + i);
-            Console.WriteLine(VerOuter[i]);
-        }
-
-
-
-        // Tetris Title Text
-        Console.ForegroundColor = ConsoleColor.Green;
-        Console.SetCursorPosition(0,10);
-        Console.Write(tetris.tetrisTitle);
-
-
-        // Key buttons
-        for (int y = 0; y < keyButtons.Length; ++y)
-        {
-            Console.SetCursorPosition(44, 30 + y);
-            for (int x = 0; x < keyButtons[y].Length; ++x)
+            Console.SetCursorPosition(10,  20 + y);
+            //var weirdway = string.Join("", BlockList[y]);
+            //Console.WriteLine(weirdway);
+            for (int x = 0; x < BlockList[y].Count; ++x)
             {
-                Console.Write(keyButtons[y][x]);
+
+                if (BlockList[y][x] == "▦")
+                {
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.Write(BlockList[y][x]);
+                    continue;
+                }
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.Write(BlockList[y][x]);
+            }
+            Console.WriteLine();
+
+        }
+    }
+
+    public void DeadRender()
+    {
+        for (int y = 0; y < BlockList.Count; ++y)
+        {
+            Console.SetCursorPosition(10, 20 + y);
+            //var weirdway = string.Join("", BlockList[y]);
+            //Console.WriteLine(weirdway);
+            for (int x = 0; x < BlockList[y].Count; ++x)
+            {
+                Console.ForegroundColor = ConsoleColor.Black;
+                Console.Write("▦");
+                    continue;
+            }
+            Console.WriteLine();
+
+        }
+    }
+
+    // SetBlock
+    public void SetBlock(int _y, int _x, string block) // Set's block
+    {
+        BlockList[_y][_x] = block;
+
+    }
+    public bool IsBlock(int _y, int _x, string block) // Set's block
+    {
+        return BlockList[_y][_x] == block;
+
+    }
+
+    // ClearBlock
+
+    public void ClearBlock()
+    {
+        
+        for (int y = 0; y < BlockList.Count; ++y)
+        {
+            for (int x = 0; x < BlockList[y].Count; x++)
+            {
+                if (y == 0 || y == BlockList.Count - 1)
+                {
+                    BlockList[y][x] = "▣";
+                    continue;
+                }
+
+                BlockList[y][x] = "□";
             }
         }
     }
 
-    public void GameOver()
+    // ctor
+    public GameScreen(int _x, int _y, bool TopAndBottomLine)
     {
-        string answer = "";
-        Console.SetCursorPosition(15,25);
-        Console.ForegroundColor = ConsoleColor.White;
-        Console.Write("GAME OVER");
-        Console.ReadLine();
-        Console.SetCursorPosition(15, 25);
-        Console.Write("Try One More Time?");
-        Console.SetCursorPosition(15, 26);
-        Console.Write("Y/N");
-        while (answer != "n" && answer != "y")
+        // if _x , _y == 0
+        // defense
+        for (int y = 0; y < _y; ++y) // for every y axis movement,
         {
-            Console.SetCursorPosition(15, 27);
-            answer = Console.ReadLine().ToLower();
+            BlockList.Add(new List<string>()); // create _y amount of list inside the list.
+
+            for (int x = 0; x < _x; ++x) //  then add _x amount of elements in side the list[y] list.
+            {
+                if ((TopAndBottomLine && y == 0) || (TopAndBottomLine && y == _y - 1))
+                {
+                    BlockList[y].Add("▣");
+                }
+                else
+                {
+                    BlockList[y].Add("□");
+                }
+            }
         }
-        if ("n" == answer)
-        {
-            RunGame = false;
-        }
-        else if ("y" == answer)
-        {
-            RunGame = true;
-        }
+        ScrSizeY = _y;
+        ScrSizeX = _x;
     }
-
-
 }

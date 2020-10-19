@@ -1,5 +1,24 @@
 ﻿using System.Collections.Generic;
+public enum BLOCKDIR
+{
+    BD_T,
+    BD_R,
+    BD_B,
+    BD_L,
+    BD_MAX
+}
 
+public enum BLOCKTYPE
+{
+    BT_l,
+    BT_T,
+    BT_J,
+    BT_L,
+    BT_S,
+    BT_Z,
+    BT_O,
+    BT_MAX
+}
 public partial class Block
 {   // Manage all the shape of block
     // Data structure
@@ -32,9 +51,11 @@ public partial class Block
             }
         }
 
-        // Assign Block
+        // Block components
         string s = "▦";
         var e = "□";
+
+        // Blocks By BLOCKTYPE
         #region l
 
         //l T

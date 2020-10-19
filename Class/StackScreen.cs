@@ -4,12 +4,12 @@ using System.Diagnostics;
 using System.Threading;
 using System.Xml.Schema;
 
-public class ACCClass : TETRISSCREEN
+public class StackScreen : GameScreen
 {
-    private TETRISSCREEN Parent;
-    public int Score;
+    private GameScreen Parent;
+    private int Score;
 
-    public ACCClass(TETRISSCREEN _Parent) : base(_Parent.ScrSizeX, _Parent.ScrSizeY - 2, false)
+    public StackScreen(GameScreen _Parent) : base(_Parent.ScrSizeX, _Parent.ScrSizeY - 2, false)
     // Use Parent's Constructor
     {
         Parent = _Parent;

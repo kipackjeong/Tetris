@@ -8,22 +8,20 @@ namespace Tetris
     {
         private static void Main(string[] args)
         {
-            var gameSC = new GAMESCREEN();
-            
-            while (gameSC.RunGame)
+            var gameScreen = new StaticScreen();
+            while (gameScreen.CheckToRun()) // initially set to true, false when user enters 'n' after a game.
             {
-                var NewSC = new TETRISSCREEN(10, 20, true);
-                var AcSC = new ACCClass(NewSC);
+                var NewSC = new GameScreen(10, 20, true);
+                var AcSC = new StackScreen(NewSC);
                 var newBlock = new Block(NewSC, AcSC);
                 int i = 0;
-                Console.Clear();
-                gameSC.renderScreen();
+                gameScreen.StaticRender();
 
                 while (!newBlock.Dead)
                 {
                     newBlock.Move(i);
                     NewSC.Render();
-                    for (int r = 0; r < 50000000; r++)
+                    for (int r = 0; r < 200000; r++) // controls speed
                     {
                         int a = 0;
                     }
@@ -32,7 +30,7 @@ namespace Tetris
                     i++;
                 }
                 NewSC.DeadRender();
-                gameSC.GameOver();
+                gameScreen.GameOver();
             }
 
         }

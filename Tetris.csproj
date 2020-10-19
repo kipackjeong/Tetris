@@ -73,15 +73,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class\ACCClass.cs" />
-    <Compile Include="Class\AlPHABET.cs" />
+    <Compile Include="Class\StackScreen.cs" />
     <Compile Include="Class\Block.Block.cs" />
     <Compile Include="Class\Block.cs" />
-    <Compile Include="Class\GAMESCREEN.cs" />
+    <Compile Include="Class\StaticScreen.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Class\TETRISSCREEN.cs" />
-    <Compile Include="Class\Template.cs" />
+    <Compile Include="Class\GameScreen.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

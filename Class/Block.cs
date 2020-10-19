@@ -6,58 +6,54 @@ using System.Runtime.Remoting.Messaging;
 using System.Runtime.Serialization;
 using System.Security.Policy;
 
-public enum BLOCKDIR
-{
-    BD_T,
-    BD_R,
-    BD_B,
-    BD_L,
-    BD_MAX
-}
 
-public enum BLOCKTYPE
-{
-    BT_l,
-    BT_T,
-    BT_J,
-    BT_L,
-    BT_S,
-    BT_Z,
-    BT_O,
-    BT_MAX
-}
 
 public partial class Block
 {
-    public int _x = 5;
-    public int _y = 0;
-    public int curBase;
-    protected BLOCKTYPE CurBLockType;
-    protected BLOCKDIR CurBLOCKDIR;
-    protected Random Rand = new Random();
-    protected TETRISSCREEN BlockScr; //스크린 밖에있는 스크린을 불러와야한다
-    protected ACCClass BlockAccScreen;
-    public string[][] Arr;
-    public bool Dead = false;
-    public bool canItTurn = true;
-    public bool pressedW;
-    public int MaxLength;
-    public int MaxHeight;
+    #region field
+    //block starting grid (x,y)
+    private int _x = 5;
+    private int _y = 0;
+    // Blocks container.
+    private string[][] Arr;
+    // cur block Type/Dir
+    private BLOCKTYPE curBLockType;
+    private BLOCKDIR curBLOCKDIR;
 
-    public Block(TETRISSCREEN _BlockScr, ACCClass _BlockAccScreen) // Constructor
+    private BLOCKTYPE nextBLockType;
+    private BLOCKDIR nextBLOCKDIR;
+    // cur block's dimensions
+    private int curBase;
+    private int MaxLength;
+    private int MaxHeight;
+    // Compositions
+    private Random Rand = new Random();
+    private GameScreen _blockScr;
+    private StackScreen _blockAccScreen;
+    // conditions
+    public bool Dead = false;
+    private bool canItTurn = true;
+
+    #endregion
+
+
+
+    #region Constructor
+    public Block(GameScreen blockScr, StackScreen _blockAccScreen)
     {
-        if (_BlockScr == null || _BlockAccScreen == null)
+        if (blockScr == null || _blockAccScreen == null)
         {
             return;
         }
-        BlockScr = _BlockScr;
-        BlockAccScreen = _BlockAccScreen;
+        _blockScr = blockScr;
+        this._blockAccScreen = _blockAccScreen;
         Datalnit();
         CreateRandBlock();
-        SettingBlock(CurBLockType, CurBLOCKDIR);
+        SettingBlock(curBLockType, curBLOCKDIR);
         AssignMaxLength(GetMaxLength(Arr));
     }
 
+    #endregion
     private int GetMaxHeight(string[][] Block)
     {
         return Block.Length;
@@ -84,8 +80,8 @@ public partial class Block
     }
     private void CreateRandBlock()
     {
-        CurBLockType = (BLOCKTYPE)Rand.Next(0, 7);
-        CurBLOCKDIR = (BLOCKDIR)Rand.Next(0, 4);
+        curBLockType = (BLOCKTYPE)Rand.Next(0, 7);
+        curBLOCKDIR = (BLOCKDIR)Rand.Next(0, 4);
     }
 
     private void SettingBlock(BLOCKTYPE type, BLOCKDIR dir)
@@ -102,7 +98,7 @@ public partial class Block
                 if (Arr[y][x] == "▦")
                 {
                     
-                    BlockAccScreen.SetBlock(_y + y -1 , _x + x, "▦");
+                    _blockAccScreen.SetBlock(_y + y -1 , _x + x, "▦");
                     IsDead(y);
                 }
                
@@ -115,9 +111,10 @@ public partial class Block
         CreateRandBlock();
         _x = 5;
         _y = 1;
-        SettingBlock(CurBLockType,CurBLOCKDIR);
+        SettingBlock(curBLockType,curBLOCKDIR);
         AssignMaxLength(GetMaxLength(Arr));
     }
+    #region Side/Down Checks
     public bool DownCheck()
     {   // Can't go down further
         for (int y = 0; y < Arr.Length; ++y)
@@ -126,7 +123,7 @@ public partial class Block
             {
                 if (Arr[y][x] == "▦")
                 {
-                    if (BlockAccScreen.ScrSizeY == y + _y || BlockAccScreen.IsBlock(y+_y , x+_x, "▦"))
+                    if (_blockAccScreen.ScrSizeY == y + _y || _blockAccScreen.IsBlock(y + _y, x + _x, "▦"))
                     {
                         Stack();
                         Reset();
@@ -146,7 +143,7 @@ public partial class Block
             {
                 if (Arr[y][x] == "▦")
                 {
-                    if (BlockAccScreen.ScrSizeX == x + _x + 1|| BlockAccScreen.IsBlock(y + _y, x + _x + 1, "▦"))
+                    if (_blockAccScreen.ScrSizeX == x + _x + 1 || _blockAccScreen.IsBlock(y + _y, x + _x + 1, "▦"))
                     {
                         return true;
                     }
@@ -164,7 +161,7 @@ public partial class Block
             {
                 if (Arr[y][x] == "▦")
                 {
-                    if (0 == _x || BlockAccScreen.IsBlock(y + _y, _x -1, "▦"))
+                    if (0 == _x || _blockAccScreen.IsBlock(y + _y, _x - 1, "▦"))
                     {
                         return true;
                     }
@@ -177,14 +174,15 @@ public partial class Block
     public void TurnCheck()
     {
         string[][] nextBlock;
-        if ((int) CurBLOCKDIR < 3)
+        if ((int)curBLOCKDIR < 3)
         {
-            nextBlock = AllBLock[(int)CurBLockType][(int)CurBLOCKDIR + 1];
-        } else
-        {
-            nextBlock = AllBLock[(int)CurBLockType][0];
+            nextBlock = AllBLock[(int)curBLockType][(int)curBLOCKDIR + 1];
         }
-        
+        else
+        {
+            nextBlock = AllBLock[(int)curBLockType][0];
+        }
+
         if (RightSideCheck() || GetMaxLength(nextBlock) > GetMaxLength(Arr))
         {
             if (_x + (GetMaxLength(nextBlock) - 1) >= 9)
@@ -200,15 +198,11 @@ public partial class Block
         {
             canItTurn = true;
         }
-    }
-    public void Down()
-    {
-        if (!DownCheck())
-        {
-            _y++;
-        }
-    }
+    } 
+    #endregion
 
+
+    //////WORK ON THIS//////
     public int ScanPoint()
     {
         int endpoint = 0;
@@ -218,20 +212,20 @@ public partial class Block
         for (int y = 0; y < Arr.Length; ++ y)
         {
             if (Arr[y].Length > longest)
-                {
-                    longest = Arr[y].Length;
-                    longindex = y;
-                }
+            {
+                longest = Arr[y].Length;
+                longindex = y;
+            }
         }
 
-        for (int y = _y + GetMaxLength(Arr); y < BlockAccScreen.ScrSizeY; y++)
+        for (int y = _y + GetMaxLength(Arr); y < _blockAccScreen.ScrSizeY; y++)
         {
             for (int x = _x; x < _x + longest; ++x)
             { 
-                if (BlockAccScreen.BlockList[y][x] == "▦")
+                if (_blockAccScreen.BlockList[y][x] == "▦")
                 {
                    
-                    if (Arr[Arr.Length - 1].Length == longest && CurBLockType != BLOCKTYPE.BT_O && CurBLockType == BLOCKTYPE.BT_Z)
+                    if (Arr[Arr.Length - 1].Length == longest && curBLockType != BLOCKTYPE.BT_O && curBLockType == BLOCKTYPE.BT_Z)
                     {
                         goal = y - GetMaxHeight(Arr) + 1;
                     }
@@ -240,7 +234,7 @@ public partial class Block
                         goal = y - GetMaxHeight(Arr);
                     }
                     return goal;
-                } else if (y == BlockAccScreen.ScrSizeY - 1)
+                } else if (y == _blockAccScreen.ScrSizeY - 1)
                 {
                     goal = y + 2 - GetMaxHeight(Arr);
                 }
@@ -290,16 +284,16 @@ public partial class Block
 
             case ConsoleKey.W:
                 TurnCheck();
-                if ((int)CurBLOCKDIR < 3)
+                if ((int)curBLOCKDIR < 3)
                 {
-                    CurBLOCKDIR += 1;
-                    SettingBlock(CurBLockType, CurBLOCKDIR);
+                    curBLOCKDIR += 1;
+                    SettingBlock(curBLockType, curBLOCKDIR);
                     break;
                 }
-                else if ((int)CurBLOCKDIR == 3)
+                else if ((int)curBLOCKDIR == 3)
                 {
-                    CurBLOCKDIR = 0;
-                    SettingBlock(CurBLockType, CurBLOCKDIR);
+                    curBLOCKDIR = 0;
+                    SettingBlock(curBLockType, curBLOCKDIR);
                     break;
                 }
         
@@ -314,9 +308,9 @@ public partial class Block
 
     public string[][] beforeBlock()
     {
-        return AllBLock[(int) CurBLockType][(int) CurBLOCKDIR - 1];
+        return AllBLock[(int) curBLockType][(int) curBLOCKDIR - 1];
     }
-      
+
     public void Move(int i)
     {
         Console.SetCursorPosition(48, 32);
@@ -332,14 +326,14 @@ public partial class Block
 
             if (!canItTurn)
             {
-                _x = (BlockScr.ScrSizeX - (MaxLength)); 
+                _x = (_blockScr.ScrSizeX - (MaxLength));
                 canItTurn = true;
             }
             for (int y = 0; y < Arr.Length; ++y)
             {
                 for (int x = 0; x < Arr[y].Length; ++x)
                 {
-                        BlockScr.SetBlock(_y + y, _x + x, Arr[y][x]);
+                    _blockScr.SetBlock(_y + y, _x + x, Arr[y][x]);
                 }
             }
             // 블록을 찍는역활
@@ -349,6 +343,13 @@ public partial class Block
         catch (Exception e)
         {
             return;
+        }
+    }
+    public void Down()
+    {
+        if (!DownCheck())
+        {
+            _y++;
         }
     }
 

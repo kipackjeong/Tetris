@@ -17,7 +17,7 @@ namespace Tetris
                 int i = 0;
                 gameScreen.StaticRender();
 
-                while (!newBlock.Dead)
+                while (newBlock.blockAlive)
                 {
                     newBlock.Move(i);
                     NewSC.Render();

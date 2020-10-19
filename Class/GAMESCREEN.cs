@@ -60,10 +60,9 @@ public class GameScreen
         BlockList[_y][_x] = block;
 
     }
-    public bool IsBlock(int _y, int _x, string block) // Set's block
+    public bool IsBlock(int _y, int _x, string block)
     {
         return BlockList[_y][_x] == block;
-
     }
 
     // ClearBlock

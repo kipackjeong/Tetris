@@ -5,9 +5,16 @@ using System.Text;
 using System.Threading;
 using System.Xml;
 
-public class StaticScreen
+public class StaticScreen // layout that does not change.
 {
-    private string tetrisTitle = $@"
+
+
+    #region Fields
+    private readonly StringBuilder _horBorder = new StringBuilder();
+    private readonly StringBuilder _verBorder = new StringBuilder();
+    private readonly StringBuilder _horOuter = new StringBuilder();
+    private readonly StringBuilder _verOuter = new StringBuilder();
+    private readonly string _title = $@"
            _______ _______ _______ ______  ___ _______ 
           |       |       |       |    _ ||   |       |
             |   | |   |___  |   | |   |_|||   | |_____ 
@@ -15,20 +22,17 @@ public class StaticScreen
             |   | |   |___  |   | |   | |||   |_____| |
             |___| |_______| |___| |___| |||___|_______|
 ";
-    private StringBuilder horBorder = new StringBuilder();
-    private StringBuilder verBorder = new StringBuilder();
-    private StringBuilder horOuter = new StringBuilder();
-    private StringBuilder verOuter = new StringBuilder();
-    private bool  RunGame = true;
-
-    public string[][] keyButtons = new string[][]
+    private readonly string[][] _keyButtons = new string[][]
     {
         new string[]{" "," "," ","","W" },
         new string[]{" "," "," ","▲"},
         new string[]{"","A","◀"," ", " ","▶", "D"},
         new string[]{" "," "," ","▼"},
         new string[]{"  Space"},
-    };
+    }; 
+    #endregion
+
+    private bool _runGame = true;
 
 
     public StaticScreen()
@@ -42,22 +46,22 @@ public class StaticScreen
     {
         for (int i = 0; i < 22; i++)
         {
-            verBorder.Append("▧");
+            _verBorder.Append("▧");
         }
 
         for (int i = 0; i < 10; i++)
         {
-            horBorder.Append("▧");
+            _horBorder.Append("▧");
         }
 
         for (int i = 0; i < 22; i++)
         {
-            verOuter.Append("▧");
+            _verOuter.Append("▧");
         }
 
         for (int i = 0; i < 32; i++)
         {
-            horOuter.Append("▧");
+            _horOuter.Append("▧");
         }
 
     }
@@ -72,25 +76,25 @@ public class StaticScreen
         // horizontal
         Console.ForegroundColor = ConsoleColor.Cyan;
         Console.SetCursorPosition(10, 19);
-        Console.WriteLine(horBorder);
+        Console.WriteLine(_horBorder);
         Console.ForegroundColor = ConsoleColor.Cyan;
         Console.SetCursorPosition(10, 40);
-        Console.WriteLine(horBorder);
+        Console.WriteLine(_horBorder);
 
 
         // vertical
-        for (int i = 0; i < verBorder.Length; i++)
+        for (int i = 0; i < _verBorder.Length; i++)
         {
             Console.ForegroundColor = ConsoleColor.Cyan;
             Console.SetCursorPosition(8, 19 + i);
-            Console.WriteLine(verBorder[i]);
+            Console.WriteLine(_verBorder[i]);
         }
 
-        for (int i = 0; i < verBorder.Length; i++)
+        for (int i = 0; i < _verBorder.Length; i++)
         {
             Console.ForegroundColor = ConsoleColor.Cyan;
             Console.SetCursorPosition(30, 19 + i);
-            Console.WriteLine(verBorder[i]);
+            Console.WriteLine(_verBorder[i]);
         }
         #endregion
 
@@ -98,42 +102,42 @@ public class StaticScreen
         // horizontal
         Console.ForegroundColor = ConsoleColor.White;
         Console.SetCursorPosition(0, 18);
-        Console.WriteLine(horOuter);
+        Console.WriteLine(_horOuter);
         Console.ForegroundColor = ConsoleColor.White;
-        Console.SetCursorPosition(0, 18 + verBorder.Length);
-        Console.WriteLine(horOuter);
+        Console.SetCursorPosition(0, 18 + _verBorder.Length);
+        Console.WriteLine(_horOuter);
 
 
         // vertical
         // left
-        for (int i = 0; i < verOuter.Length; i++)
+        for (int i = 0; i < _verOuter.Length; i++)
         {
             Console.ForegroundColor = ConsoleColor.White;
             Console.SetCursorPosition(0, 19 + i);
-            Console.WriteLine(verOuter[i]);
+            Console.WriteLine(_verOuter[i]);
         }
         // right
-        for (int i = 0; i < verBorder.Length; i++)
+        for (int i = 0; i < _verBorder.Length; i++)
         {
             Console.ForegroundColor = ConsoleColor.White;
             Console.SetCursorPosition(62, 19 + i);
-            Console.WriteLine(verOuter[i]);
+            Console.WriteLine(_verOuter[i]);
         }
         #endregion
 
         #region Title
         Console.ForegroundColor = ConsoleColor.Green;
         Console.SetCursorPosition(0, 10);
-        Console.Write(tetrisTitle); 
+        Console.Write(_title); 
         #endregion
 
         #region Key Button Display
-        for (int y = 0; y < keyButtons.Length; ++y)
+        for (int y = 0; y < _keyButtons.Length; ++y)
         {
             Console.SetCursorPosition(44, 30 + y);
-            for (int x = 0; x < keyButtons[y].Length; ++x)
+            for (int x = 0; x < _keyButtons[y].Length; ++x)
             {
-                Console.Write(keyButtons[y][x]);
+                Console.Write(_keyButtons[y][x]);
             }
         } 
         #endregion
@@ -157,16 +161,16 @@ public class StaticScreen
         }
         if ("n" == answer)
         {
-            RunGame = false;
+            _runGame = false;
         }
         else if ("y" == answer)
         {
-            RunGame = true;
+            _runGame = true;
         }
     }
     public bool CheckToRun()
     {
-        return RunGame;
+        return _runGame;
     }
 
 

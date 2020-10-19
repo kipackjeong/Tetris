@@ -1,2 +1,0 @@
-# Tetris
- Console Game

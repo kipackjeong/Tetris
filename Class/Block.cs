@@ -6,15 +6,30 @@ using System.Runtime.InteropServices;
 using System.Runtime.Remoting.Messaging;
 using System.Runtime.Serialization;
 using System.Security.Policy;
+using System.Xml.Schema;
 
+public struct Point
+{
+    public int X;
+    public int Y;
 
-
+    public Point(int x, int y)
+    {
+        X = x;
+        Y = y;
+    }
+}
+ 
 public partial class Block
 {
-    #region field
+    #region field/ prop
+    
     //block grid (x,y)
     private int _x = 5;
     private int _y = 0;
+    public Point XY;
+
+
     // Blocks container.
     private string[][] _arr;
     // cur block Type/Dir
@@ -30,11 +45,11 @@ public partial class Block
     // Compositions
     private readonly Random _rand = new Random();
     private readonly GameScreen _gameScr;
-    private readonly StackScreen _stackScr;
+    private StackScreen _stackScr;
     // condition
     private bool _canItTurn = true;
     public bool blockAlive = true;
-
+    
     #endregion
 
 
@@ -48,10 +63,9 @@ public partial class Block
         }
         _gameScr = gameScr;
         _stackScr = stackScr;
-        Datalnit();
+        Datalnit(); // initializes the array that all the blocks are in.
         CreateRandBlock();
         SettingBlock(_curBlockType, _curBlockDir);
-        _maxLength = GetMaxLength(_arr);
     }
 
     #endregion
@@ -60,11 +74,14 @@ public partial class Block
     {
         _curBlockType = (BLOCKTYPE)_rand.Next(0, 7);
         _curBlockDir = (BLOCKDIR)_rand.Next(0, 4);
+
     }
 
     private void SettingBlock(BLOCKTYPE type, BLOCKDIR dir)
     {
-        _arr = AllBLock[(int)type][(int)dir];
+        _arr = AllBLock[(int)type][(int)dir]; 
+        GetMaxHeight(_arr);
+        GetMaxLength(_arr);
     }
 
     public void Stack()
@@ -75,7 +92,6 @@ public partial class Block
             {
                 if (_arr[y][x] == "▦")
                 {
-                    
                     _stackScr.SetBlock(_y + y -1 , _x + x, "▦");
                     IsDead(y);
                 }
@@ -91,8 +107,7 @@ public partial class Block
         _x = 5;
         _y = 0;
 
-        SettingBlock(_curBlockType,_curBlockDir); // sets on the screen
-        GetMaxLength(_arr); // get MaxLength for block and set it
+        SettingBlock(_curBlockType,_curBlockDir); // sets on the screen//
     }
     #region Side/Down Checks
     public bool DownCheck()
@@ -164,7 +179,7 @@ public partial class Block
             nextBlock = AllBLock[(int)_curBlockType][0];
         }
 
-        var nextBMaxLength = GetMaxLength(nextBlock);
+        var nextBMaxLength = NextBlockLength(nextBlock);
         if (RightSideCheck() || nextBMaxLength > _maxLength)
         {
             if (_x + (nextBMaxLength - 1) >= 9)
@@ -180,59 +195,93 @@ public partial class Block
         {
             _canItTurn = true;
         }
-    } 
+    }
+
+    public int NextBlockLength(string[][] block)
+    {
+        int maxLength = 0;
+        for (int y = 0; y < block.Length; y++)
+        {
+            if (block[y].Length > maxLength)
+            {
+                maxLength = block[y].Length;
+            }
+        }
+        return maxLength;
+    }
     #endregion
 
 
     //////WORK ON THIS//////
-    public int ScanPoint()
+    public Point ScanPoint()
     {
-        int endpoint = 0;
-        int longest = 0;
-        int longindex = 0;
-        int goal = 0;
-        for (int y = 0; y < _arr.Length; ++ y)
+        int endpoint = 21;
+
+        int blockBaseXIndex = 15;
+        int blockBaseLength = 0;
+        bool foundBlock = false;
+        var alignsWBases = new HashSet<int>();
+
+        // Scan block
+        for (var x = 0; x < _arr[_maxHeight - 1].Length; ++x)
         {
-            if (_arr[y].Length > longest)
+            if (_arr[_maxHeight - 1][x] == "▦")
             {
-                longest = _arr[y].Length;
-                longindex = y;
+                if (!foundBlock)
+                {
+                    foundBlock = true;
+                    blockBaseXIndex = x;
+                }
+                blockBaseLength++;
+                
             }
         }
 
-        for (int y = _y + _maxLength; y < _stackScr.ScrSizeY; y++)
+        foundBlock = false;
+
+
+        int count = 0;
+        // Scan Ground
+        for (var y = _y + _maxLength; y < _stackScr.ScrSizeY; ++y)
         {
-
-            for (int x = _x; x < _x + longest; ++x) 
+            for (var x = _x; x < _x + _maxLength; ++x)
             {
-                if (_stackScr.BlockList[y][x] == "▦")
+                if (_stackScr.BlockList[y][x] == "▦") // found a stacked block below current block
                 {
-                    if (_arr[_arr.Length - 1].Length == longest && _curBlockType != BLOCKTYPE.BT_O &&
-                        _curBlockType == BLOCKTYPE.BT_Z)
+                    if (!foundBlock)
                     {
-                        goal = y - GetMaxHeight(_arr) + 1;
-                    }
-                    else
-                    {
-                        goal = y - GetMaxHeight(_arr);
+                        XY.X = x;
+                        XY.Y = y;
+                        foundBlock = true;
                     }
 
-                    return goal;
-                }
-                else if (y == _stackScr.ScrSizeY - 1)
-                {
-                    goal = y + 2 - GetMaxHeight(_arr);
+                    alignsWBases.Add(x);
+
                 }
             }
+            if (foundBlock)
+                break;
+            // check if x grid of highestgroundblock is same as the base of current block
         }
-
-        return goal;
+        if(!foundBlock)
+        {
+            XY.Y = _stackScr.ScrSizeY + 1 - _maxHeight;
+        }
+        else if (alignsWBases.Contains(blockBaseXIndex) || blockBaseXIndex ==  XY.X)
+        {
+            XY.Y = XY.Y - 1 - _maxHeight;
+        }
+        else
+        {
+            XY.Y = XY.Y - _maxHeight + 1;
+        }
+        return XY;
     }
-    private int GetMaxHeight(string[][] Block)
+    private void GetMaxHeight(string[][] Block)
     {
-        return Block.Length;
+        _maxHeight =  Block.Length;
     }
-    private int GetMaxLength(string[][] Block)
+    private void GetMaxLength(string[][] Block)
     {
         int maxLength = 0;
         for (int y = 0; y < _arr.Length; y++)
@@ -243,11 +292,11 @@ public partial class Block
             }
         }
 
-        return maxLength;
+        _maxLength =  maxLength;
     }
     public void Move(int i)
     {
-        Console.SetCursorPosition(48, 32);
+        Console.SetCursorPosition(48 + StaticScreen.BasicGrid.X, 32 + StaticScreen.BasicGrid.Y);
         if (i % 10 == 0)
         {
             Down();
@@ -336,7 +385,13 @@ public partial class Block
     public void QuickDown()
     {
         var point = ScanPoint();
-        _y = point;
+
+        //if (_stackScr.BlockList[point.Y][point.X] == "▦")
+        //{
+        //    _y = point.Y - 2;
+        //}
+
+        _y = point.Y;
     }
 
     public void IsDead(int y)

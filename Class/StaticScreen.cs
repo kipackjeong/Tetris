@@ -7,7 +7,7 @@ using System.Xml;
 
 public class StaticScreen // layout that does not change.
 {
-
+    public static Point BasicGrid = new Point(10,-8);
 
     #region Fields
     private readonly StringBuilder _horBorder = new StringBuilder();
@@ -15,12 +15,12 @@ public class StaticScreen // layout that does not change.
     private readonly StringBuilder _horOuter = new StringBuilder();
     private readonly StringBuilder _verOuter = new StringBuilder();
     private readonly string _title = $@"
-           _______ _______ _______ ______  ___ _______ 
-          |       |       |       |    _ ||   |       |
-            |   | |   |___  |   | |   |_|||   | |_____ 
-            |   | |    ___| |   | |    _ ||   |_____  |
-            |   | |   |___  |   | |   | |||   |_____| |
-            |___| |_______| |___| |___| |||___|_______|
+                     _______ _______ _______ ______  ___ _______ 
+                    |       |       |       |    _ ||   |       |
+                      |   | |   |___  |   | |   |_|||   | |_____ 
+                      |   | |    ___| |   | |    _ ||   |_____  |
+                      |   | |   |___  |   | |   | |||   |_____| |
+                      |___| |_______| |___| |___| |||___|_______|
 ";
     private readonly string[][] _keyButtons = new string[][]
     {
@@ -32,12 +32,11 @@ public class StaticScreen // layout that does not change.
     }; 
     #endregion
 
-    private bool _runGame = true;
+    private bool _runGame = false;
 
 
     public StaticScreen()
     {
-
         BuildBorders();
         Console.WindowHeight = 40;
     }
@@ -75,10 +74,10 @@ public class StaticScreen // layout that does not change.
         #region INNER Border
         // horizontal
         Console.ForegroundColor = ConsoleColor.Cyan;
-        Console.SetCursorPosition(10, 19);
+        Console.SetCursorPosition(10 + BasicGrid.X, 19 + BasicGrid.Y);
         Console.WriteLine(_horBorder);
         Console.ForegroundColor = ConsoleColor.Cyan;
-        Console.SetCursorPosition(10, 40);
+        Console.SetCursorPosition(10 + BasicGrid.X, 40 + BasicGrid.Y);
         Console.WriteLine(_horBorder);
 
 
@@ -86,14 +85,14 @@ public class StaticScreen // layout that does not change.
         for (int i = 0; i < _verBorder.Length; i++)
         {
             Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.SetCursorPosition(8, 19 + i);
+            Console.SetCursorPosition(8 + BasicGrid.X, 19 + i + BasicGrid.Y);
             Console.WriteLine(_verBorder[i]);
         }
 
         for (int i = 0; i < _verBorder.Length; i++)
         {
             Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.SetCursorPosition(30, 19 + i);
+            Console.SetCursorPosition(30 + BasicGrid.X, 19 + i + BasicGrid.Y);
             Console.WriteLine(_verBorder[i]);
         }
         #endregion
@@ -101,10 +100,10 @@ public class StaticScreen // layout that does not change.
         #region OUTER Border
         // horizontal
         Console.ForegroundColor = ConsoleColor.White;
-        Console.SetCursorPosition(0, 18);
+        Console.SetCursorPosition(0 + BasicGrid.X, 18 + BasicGrid.Y);
         Console.WriteLine(_horOuter);
         Console.ForegroundColor = ConsoleColor.White;
-        Console.SetCursorPosition(0, 18 + _verBorder.Length);
+        Console.SetCursorPosition(0 + BasicGrid.X, 18 + _verBorder.Length + BasicGrid.Y);
         Console.WriteLine(_horOuter);
 
 
@@ -113,50 +112,75 @@ public class StaticScreen // layout that does not change.
         for (int i = 0; i < _verOuter.Length; i++)
         {
             Console.ForegroundColor = ConsoleColor.White;
-            Console.SetCursorPosition(0, 19 + i);
+            Console.SetCursorPosition(0 + BasicGrid.X, 19 + i + BasicGrid.Y);
             Console.WriteLine(_verOuter[i]);
         }
         // right
         for (int i = 0; i < _verBorder.Length; i++)
         {
             Console.ForegroundColor = ConsoleColor.White;
-            Console.SetCursorPosition(62, 19 + i);
+            Console.SetCursorPosition(62 + BasicGrid.X, 19 + i + BasicGrid.Y);
             Console.WriteLine(_verOuter[i]);
         }
         #endregion
 
         #region Title
-        Console.ForegroundColor = ConsoleColor.Green;
-        Console.SetCursorPosition(0, 10);
+        Console.ForegroundColor = ConsoleColor.Yellow;
+        Console.SetCursorPosition(  BasicGrid.X, 10 + BasicGrid.Y);
         Console.Write(_title); 
         #endregion
 
         #region Key Button Display
         for (int y = 0; y < _keyButtons.Length; ++y)
         {
-            Console.SetCursorPosition(44, 30 + y);
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.SetCursorPosition(44 + BasicGrid.X, 30 + y + BasicGrid.Y);
             for (int x = 0; x < _keyButtons[y].Length; ++x)
             {
                 Console.Write(_keyButtons[y][x]);
             }
-        } 
+        }
         #endregion
+        // before games start
+        while (_runGame == false)
+        {
+            GameStart();
+        }
     }
 
+    public void GameStart()
+    {
+        Console.ForegroundColor = ConsoleColor.White;
+        Console.SetCursorPosition(13 + BasicGrid.X, 25 + BasicGrid.Y);
+        Console.WriteLine("Want to Start?");
+        Console.SetCursorPosition(18 + BasicGrid.X, 27 + BasicGrid.Y);
+        Console.WriteLine("Y/N");
+        Console.SetCursorPosition(19 + BasicGrid.X, 28 + BasicGrid.Y);
+        var answer = Console.ReadLine();
+        
+        if (answer.ToLower() == "y")
+        {
+            _runGame = true;
+        }
+        else
+        {
+            return;
+        }
+    }
     public void GameOver()
     {
         string answer = "";
-        Console.SetCursorPosition(15,25);
+        Console.SetCursorPosition(15 + BasicGrid.X, 25 + BasicGrid.Y);
         Console.ForegroundColor = ConsoleColor.White;
         Console.Write("GAME OVER");
         Console.ReadLine();
-        Console.SetCursorPosition(15, 25);
+        Console.SetCursorPosition(15 + BasicGrid.X, 25 + BasicGrid.Y);
         Console.Write("Try One More Time?");
-        Console.SetCursorPosition(15, 26);
+        Console.SetCursorPosition(15 + BasicGrid.X, 26 + BasicGrid.Y);
         Console.Write("Y/N");
         while (answer != "n" && answer != "y")
         {
-            Console.SetCursorPosition(15, 27);
+            Console.SetCursorPosition(15 + BasicGrid.X, 27 + BasicGrid.Y);
             answer = Console.ReadLine().ToLower();
         }
         if ("n" == answer)

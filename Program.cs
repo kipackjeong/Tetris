@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Net;
 
 
@@ -8,7 +9,12 @@ namespace Tetris
     {
         private static void Main(string[] args)
         {
+            //var file = File.Create(@"D:\Coding");
+            
             var gameScreen = new StaticScreen();
+            gameScreen.StaticRender();
+            Console.Clear();
+
             while (gameScreen.CheckToRun()) // initially set to true, false when user enters 'n' after a game.
             {
                 var NewSC = new GameScreen(10, 20, true);
@@ -21,7 +27,7 @@ namespace Tetris
                 {
                     newBlock.Move(i);
                     NewSC.Render();
-                    for (int r = 0; r < 200000; r++) // controls speed
+                    for (int r = 0; r < 500000; r++) // controls speed
                     {
                         int a = 0;
                     }

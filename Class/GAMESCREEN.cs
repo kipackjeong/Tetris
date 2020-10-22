@@ -5,6 +5,7 @@ using System.Xml.Schema;
 public class GameScreen
 {
     //field
+    private Point baseGrid= StaticScreen.BasicGrid;
     public List<List<string>> BlockList = new List<List<string>>();
     public Random randomNum = new Random();
     public int ScrSizeX;
@@ -16,7 +17,7 @@ public class GameScreen
     {
         for (int y = 0; y < BlockList.Count; ++y)
         {
-            Console.SetCursorPosition(10,  20 + y);
+            Console.SetCursorPosition(10 + baseGrid.X,  20 + y + baseGrid.Y);
             //var weirdway = string.Join("", BlockList[y]);
             //Console.WriteLine(weirdway);
             for (int x = 0; x < BlockList[y].Count; ++x)
@@ -40,7 +41,7 @@ public class GameScreen
     {
         for (int y = 0; y < BlockList.Count; ++y)
         {
-            Console.SetCursorPosition(10, 20 + y);
+            Console.SetCursorPosition(10 + baseGrid.X, 20 + y + baseGrid.Y);
             //var weirdway = string.Join("", BlockList[y]);
             //Console.WriteLine(weirdway);
             for (int x = 0; x < BlockList[y].Count; ++x)
@@ -57,8 +58,14 @@ public class GameScreen
     // SetBlock
     public void SetBlock(int _y, int _x, string block) // Set's block
     {
-        BlockList[_y][_x] = block;
-
+        try
+        {
+            BlockList[_y][_x] = block;
+        }
+        catch (Exception e)
+        {
+            
+        }
     }
     public bool IsBlock(int _y, int _x, string block)
     {

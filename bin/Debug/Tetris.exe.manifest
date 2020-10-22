@@ -42,14 +42,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Tetris.exe" size="15832">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Tetris.exe" size="17368">
       <assemblyIdentity name="Tetris" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>CyAaUkDC0n4BoFoE7RNj25wMCyiep7x1HxDsvc28dqw=</dsig:DigestValue>
+        <dsig:DigestValue>BsdpNxs/sAI6mXFuSh2nQxQ6q9uBq0W2mbYCedt6i6M=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>

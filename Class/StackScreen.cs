@@ -6,20 +6,19 @@ using System.Xml.Schema;
 
 public class StackScreen : GameScreen
 {
-    private GameScreen Parent;
-    private int Score;
+    private GameScreen _parent;
+    private int _score;
 
     public StackScreen(GameScreen _Parent) : base(_Parent.ScrSizeX, _Parent.ScrSizeY - 2, false)
-    // Use Parent's Constructor
+    // Use _parent's Constructor
     {
-        Parent = _Parent;
+        _parent = _Parent;
 
-    }
-
-    public override void Render()
+    } 
+    public override void Render() // renders stacked blocks, and removes filled line.
     {
 
-        var emptyList = Empty();
+        var emptyList = empty(); // brings filled rows to empty.
         if (emptyList.Count > 0)
         {
             for (int i = 0; i < emptyList.Count; i++)
@@ -27,20 +26,20 @@ public class StackScreen : GameScreen
                 BlockList.RemoveAt(emptyList[i]);
                 BlockList.Insert(0, new List<string>() { "□", "□", "□", "□", "□", "□", "□", "□", "□", "□"});
             }
-            getScore(emptyList.Count);
+            upScore(emptyList.Count);
         }
         for (int y = 0; y < BlockList.Count; ++y)
         {
             for (int x = 0; x < BlockList[y].Count; ++x)
             {
-                Parent.SetBlock(y + 1, x, BlockList[y][x]);
+                _parent.SetBlock(y + 1, x, BlockList[y][x]);
             }
         }
-        Console.SetCursorPosition(43, 25);
-        Console.WriteLine("Score: " + Score);
+        Console.SetCursorPosition(43 + StaticScreen.BasicGrid.X, 25 + StaticScreen.BasicGrid.Y);
+        Console.WriteLine("score: " + _score);
     }
 
-    public List<int> Empty()
+    private List<int> empty()
     {
         List<int> row = new List<int>();
         for (int y = 0; y < ScrSizeY; ++y)
@@ -60,9 +59,9 @@ public class StackScreen : GameScreen
         }
         return row;
     }
-    public void getScore(int rows)
+    private void upScore(int rows)
     {
-        Score += (100 * rows);
+        _score += (100 * rows);
     }
 
 

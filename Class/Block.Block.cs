@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-public enum BLOCKDIR
+public enum BLOCKDIR // Block Directions
 {
     BD_T,
     BD_R,
@@ -8,7 +8,7 @@ public enum BLOCKDIR
     BD_MAX
 }
 
-public enum BLOCKTYPE
+public enum BLOCKTYPE // Block Types
 {
     BT_l,
     BT_T,
@@ -37,17 +37,17 @@ public partial class Block
     //BD_B,
     //BD_L,
 
-    private List<List<string[][]>> AllBLock = new List<List<string[][]>>();
+    private List<List<string[][]>> AllBlock = new List<List<string[][]>>(); // container to keep all the blocks/ each type has 4 directions
 
-    private void Datalnit()
+    private void Datalnit() // store all the blocks in AllBlock List
     {
         // Create Block Container.
         for (int BT = 0; BT < (int)BLOCKTYPE.BT_MAX; ++BT)
         {
-            AllBLock.Add(new List<string[][]>());
+            AllBlock.Add(new List<string[][]>());
             for (int BD = 0; BD < (int)BLOCKDIR.BD_MAX; ++BD)
             {
-                AllBLock[BT].Add(null);
+                AllBlock[BT].Add(null);
             }
         }
 
@@ -59,7 +59,7 @@ public partial class Block
         #region l
 
         //l T
-        AllBLock[(int)BLOCKTYPE.BT_l][(int)BLOCKDIR.BD_T] = new string[][]
+        AllBlock[(int)BLOCKTYPE.BT_l][(int)BLOCKDIR.BD_T] = new string[][]
         {
             new string[] {s},
             new string[] {s},
@@ -67,12 +67,12 @@ public partial class Block
             new string[] {s}
         };
         //l R
-        AllBLock[(int)BLOCKTYPE.BT_l][(int)BLOCKDIR.BD_R] = new string[][]
+        AllBlock[(int)BLOCKTYPE.BT_l][(int)BLOCKDIR.BD_R] = new string[][]
         {
             new string[] {s, s, s, s}
         };
         //l B
-        AllBLock[(int)BLOCKTYPE.BT_l][(int)BLOCKDIR.BD_B] = new string[][]
+        AllBlock[(int)BLOCKTYPE.BT_l][(int)BLOCKDIR.BD_B] = new string[][]
         {
             new string[] {s},
             new string[] {s},
@@ -80,7 +80,7 @@ public partial class Block
             new string[] {s}
         };
         // l L
-        AllBLock[(int)BLOCKTYPE.BT_l][(int)BLOCKDIR.BD_L] = new string[][]
+        AllBlock[(int)BLOCKTYPE.BT_l][(int)BLOCKDIR.BD_L] = new string[][]
         {
             new string[] {s, s, s, s}
         };
@@ -91,26 +91,26 @@ public partial class Block
 
         // T T
         
-        AllBLock[(int)BLOCKTYPE.BT_T][(int)BLOCKDIR.BD_T] = new string[][]
+        AllBlock[(int)BLOCKTYPE.BT_T][(int)BLOCKDIR.BD_T] = new string[][]
         {
             new string[] {e, s},
             new string[] {s, s, s}
         };
         // T R
-        AllBLock[(int)BLOCKTYPE.BT_T][(int)BLOCKDIR.BD_R] = new string[][]
+        AllBlock[(int)BLOCKTYPE.BT_T][(int)BLOCKDIR.BD_R] = new string[][]
          {
              new string[] {s},
              new string[] {s, s},
              new string[] {s}
         };
         // T B
-        AllBLock[(int)BLOCKTYPE.BT_T][(int)BLOCKDIR.BD_B] = new string[][]
+        AllBlock[(int)BLOCKTYPE.BT_T][(int)BLOCKDIR.BD_B] = new string[][]
         {
             new string[] {s, s, s},
             new string[] {e, s}
         };
         // T L
-        AllBLock[(int)BLOCKTYPE.BT_T][(int)BLOCKDIR.BD_L] = new string[][]
+        AllBlock[(int)BLOCKTYPE.BT_T][(int)BLOCKDIR.BD_L] = new string[][]
         {
             new string[] {e, s},
             new string[] {s, s},
@@ -122,27 +122,27 @@ public partial class Block
         #region J
 
         // J T
-        AllBLock[(int)BLOCKTYPE.BT_J][(int)BLOCKDIR.BD_T] = new string[][]
+        AllBlock[(int)BLOCKTYPE.BT_J][(int)BLOCKDIR.BD_T] = new string[][]
         {
             new string[] {e, s},
             new string[] {e, s},
             new string[] {s, s}
         };
         // J R
-        AllBLock[(int)BLOCKTYPE.BT_J][(int)BLOCKDIR.BD_R] = new string[][]
+        AllBlock[(int)BLOCKTYPE.BT_J][(int)BLOCKDIR.BD_R] = new string[][]
         {
             new string[] {s, e, e},
             new string[] {s, s, s}
         };
         // J B
-        AllBLock[(int)BLOCKTYPE.BT_J][(int)BLOCKDIR.BD_B] = new string[][]
+        AllBlock[(int)BLOCKTYPE.BT_J][(int)BLOCKDIR.BD_B] = new string[][]
         {
             new string[] {s, s},
             new string[] {s},
             new string[] {s}
         };
         // J L
-        AllBLock[(int)BLOCKTYPE.BT_J][(int)BLOCKDIR.BD_L] = new string[][]
+        AllBlock[(int)BLOCKTYPE.BT_J][(int)BLOCKDIR.BD_L] = new string[][]
         {
             new string[] {s, s, s},
             new string[] {e, e, s}
@@ -153,27 +153,27 @@ public partial class Block
         #region L
 
         // L T
-        AllBLock[(int)BLOCKTYPE.BT_L][(int)BLOCKDIR.BD_T] = new string[][]
+        AllBlock[(int)BLOCKTYPE.BT_L][(int)BLOCKDIR.BD_T] = new string[][]
         {
             new string[] {s},
             new string[] {s},
             new string[] {s, s}
         };
         // L R
-        AllBLock[(int)BLOCKTYPE.BT_L][(int)BLOCKDIR.BD_R] = new string[][]
+        AllBlock[(int)BLOCKTYPE.BT_L][(int)BLOCKDIR.BD_R] = new string[][]
         {
             new string[] {s, s, s},
             new string[] {s}
         };
         // L B
-        AllBLock[(int)BLOCKTYPE.BT_L][(int)BLOCKDIR.BD_B] = new string[][]
+        AllBlock[(int)BLOCKTYPE.BT_L][(int)BLOCKDIR.BD_B] = new string[][]
         {
             new string[] {s, s},
             new string[] {e, s},
             new string[] {e, s}
         };
         // L L
-        AllBLock[(int)BLOCKTYPE.BT_L][(int)BLOCKDIR.BD_L] = new string[][]
+        AllBlock[(int)BLOCKTYPE.BT_L][(int)BLOCKDIR.BD_L] = new string[][]
         {
             new string[] {e, e, s},
             new string[] {s, s, s}
@@ -184,27 +184,27 @@ public partial class Block
         #region S
 
         // S T
-        AllBLock[(int)BLOCKTYPE.BT_S][(int)BLOCKDIR.BD_T] = new string[][]
+        AllBlock[(int)BLOCKTYPE.BT_S][(int)BLOCKDIR.BD_T] = new string[][]
         {
             new string[] {s, e},
             new string[] {s, s},
             new string[] {e, s}
         };
         // S R
-        AllBLock[(int)BLOCKTYPE.BT_S][(int)BLOCKDIR.BD_R] = new string[][]
+        AllBlock[(int)BLOCKTYPE.BT_S][(int)BLOCKDIR.BD_R] = new string[][]
         {
             new string[] {e, s, s},
             new string[] {s, s, e}
         };
         // S B
-        AllBLock[(int)BLOCKTYPE.BT_S][(int)BLOCKDIR.BD_B] = new string[][]
+        AllBlock[(int)BLOCKTYPE.BT_S][(int)BLOCKDIR.BD_B] = new string[][]
         {
             new string[] {s, e},
             new string[] {s, s},
             new string[] {e, s}
         };
         // S L
-        AllBLock[(int)BLOCKTYPE.BT_S][(int)BLOCKDIR.BD_L] = new string[][]
+        AllBlock[(int)BLOCKTYPE.BT_S][(int)BLOCKDIR.BD_L] = new string[][]
         {
             new string[] {e, s, s},
             new string[] {s, s}
@@ -215,26 +215,26 @@ public partial class Block
         #region z
 
         // Z T
-        AllBLock[(int)BLOCKTYPE.BT_Z][(int)BLOCKDIR.BD_T] = new string[][]
+        AllBlock[(int)BLOCKTYPE.BT_Z][(int)BLOCKDIR.BD_T] = new string[][]
         {
             new string[] {s, s, e},
             new string[] {e, s, s}
         };
         // Z R
-        AllBLock[(int)BLOCKTYPE.BT_Z][(int)BLOCKDIR.BD_R] = new string[][]
+        AllBlock[(int)BLOCKTYPE.BT_Z][(int)BLOCKDIR.BD_R] = new string[][]
         {
             new string[] {e, s},
             new string[] {s, s},
             new string[] {s, e}
         };
         // Z B
-        AllBLock[(int)BLOCKTYPE.BT_Z][(int)BLOCKDIR.BD_B] = new string[][]
+        AllBlock[(int)BLOCKTYPE.BT_Z][(int)BLOCKDIR.BD_B] = new string[][]
         {
             new string[] {s, s, e},
             new string[] {e, s, s}
         };
         // Z L
-        AllBLock[(int)BLOCKTYPE.BT_Z][(int)BLOCKDIR.BD_L] = new string[][]
+        AllBlock[(int)BLOCKTYPE.BT_Z][(int)BLOCKDIR.BD_L] = new string[][]
         {
             new string[] {e, s},
             new string[] {s, s},
@@ -246,22 +246,22 @@ public partial class Block
         #region O
 
         // O
-        AllBLock[(int)BLOCKTYPE.BT_O][(int)BLOCKDIR.BD_T] = new string[][]
+        AllBlock[(int)BLOCKTYPE.BT_O][(int)BLOCKDIR.BD_T] = new string[][]
         {
             new string[] {s, s},
             new string[] {s, s}
         };
-        AllBLock[(int)BLOCKTYPE.BT_O][(int)BLOCKDIR.BD_R] = new string[][]
+        AllBlock[(int)BLOCKTYPE.BT_O][(int)BLOCKDIR.BD_R] = new string[][]
         {
             new string[] {s, s},
             new string[] {s, s}
         };
-        AllBLock[(int)BLOCKTYPE.BT_O][(int)BLOCKDIR.BD_B] = new string[][]
+        AllBlock[(int)BLOCKTYPE.BT_O][(int)BLOCKDIR.BD_B] = new string[][]
         {
             new string[] {s, s},
             new string[] {s, s}
         };
-        AllBLock[(int)BLOCKTYPE.BT_O][(int)BLOCKDIR.BD_L] = new string[][]
+        AllBlock[(int)BLOCKTYPE.BT_O][(int)BLOCKDIR.BD_L] = new string[][]
         {
             new string[] {s, s},
             new string[] {s, s}

@@ -27,7 +27,7 @@ namespace Tetris
                 {
                     newBlock.Move(i);
                     NewSC.Render();
-                    for (int r = 0; r < 500000; r++) // controls speed
+                    for (int r = 0; r < 600000; r++) // controls speed
                     {
                         int a = 0;
                     }

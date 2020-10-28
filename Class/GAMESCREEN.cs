@@ -1,36 +1,38 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Xml.Schema;
 
 public class GameScreen
 {
-    //field
+    //field/ prop
     private Point baseGrid= StaticScreen.BasicGrid;
-    public List<List<string>> BlockList = new List<List<string>>();
+
+    public List<List<string>> MainScreen = new List<List<string>>(); // this is the main screen.
     public Random randomNum = new Random();
     public int ScrSizeX;
     public int ScrSizeY;
-
+    
 
     // Render
     public virtual void Render() // y , x render screen.
     {
-        for (int y = 0; y < BlockList.Count; ++y)
+        for (int y = 0; y < MainScreen.Count; ++y)
         {
             Console.SetCursorPosition(10 + baseGrid.X,  20 + y + baseGrid.Y);
-            //var weirdway = string.Join("", BlockList[y]);
+            //var weirdway = string.Join("", MainScreen[y]);
             //Console.WriteLine(weirdway);
-            for (int x = 0; x < BlockList[y].Count; ++x)
+            for (int x = 0; x < MainScreen[y].Count; ++x)
             {
 
-                if (BlockList[y][x] == "▦")
+                if (MainScreen[y][x] == "▦")
                 {
                     Console.ForegroundColor = ConsoleColor.Yellow;
-                    Console.Write(BlockList[y][x]);
+                    Console.Write(MainScreen[y][x]);
                     continue;
                 }
                 Console.ForegroundColor = ConsoleColor.White;
-                Console.Write(BlockList[y][x]);
+                Console.Write(MainScreen[y][x]);
             }
             Console.WriteLine();
 
@@ -39,28 +41,40 @@ public class GameScreen
 
     public void DeadRender()
     {
-        for (int y = 0; y < BlockList.Count; ++y)
+        for (int y = 0; y < MainScreen.Count; ++y)
         {
             Console.SetCursorPosition(10 + baseGrid.X, 20 + y + baseGrid.Y);
-            //var weirdway = string.Join("", BlockList[y]);
+            //var weirdway = string.Join("", MainScreen[y]);
             //Console.WriteLine(weirdway);
-            for (int x = 0; x < BlockList[y].Count; ++x)
+            for (int x = 0; x < MainScreen[y].Count; ++x)
             {
                 Console.ForegroundColor = ConsoleColor.Black;
                 Console.Write("▦");
-                    continue;
+                continue;
             }
             Console.WriteLine();
+            // record users score.
+            try
+            {
+                var file = File.Create($@"D:\TetrisUsers\{StaticScreen.PlayerName}.txt");
+                StreamWriter writer = new StreamWriter(file);
+                writer.WriteLine($@"Latest Score for this User : {StackScreen._score}");
+                writer.Close();
+            }
+            catch (Exception e)
+            {
+            }
+           
 
         }
     }
 
-    // SetBlock
+    //SetBlock
     public void SetBlock(int _y, int _x, string block) // Set's block
     {
         try
         {
-            BlockList[_y][_x] = block;
+            MainScreen[_y][_x] = block;
         }
         catch (Exception e)
         {
@@ -69,7 +83,7 @@ public class GameScreen
     }
     public bool IsBlock(int _y, int _x, string block)
     {
-        return BlockList[_y][_x] == block;
+        return MainScreen[_y][_x] == block;
     }
 
     // ClearBlock
@@ -77,17 +91,17 @@ public class GameScreen
     public void ClearBlock()
     {
         
-        for (int y = 0; y < BlockList.Count; ++y)
+        for (int y = 0; y < MainScreen.Count; ++y)
         {
-            for (int x = 0; x < BlockList[y].Count; x++)
+            for (int x = 0; x < MainScreen[y].Count; x++)
             {
-                if (y == 0 || y == BlockList.Count - 1)
+                if (y == 0 || y == MainScreen.Count - 1)
                 {
-                    BlockList[y][x] = "▣";
+                    MainScreen[y][x] = "▣";
                     continue;
                 }
 
-                BlockList[y][x] = "□";
+                MainScreen[y][x] = "□";
             }
         }
     }
@@ -99,17 +113,17 @@ public class GameScreen
         // defense
         for (int y = 0; y < _y; ++y) // for every y axis movement,
         {
-            BlockList.Add(new List<string>()); // create _y amount of list inside the list.
+            MainScreen.Add(new List<string>()); // create _y amount of list inside the list.
 
             for (int x = 0; x < _x; ++x) //  then add _x amount of elements in side the list[y] list.
             {
                 if ((TopAndBottomLine && y == 0) || (TopAndBottomLine && y == _y - 1))
                 {
-                    BlockList[y].Add("▣");
+                    MainScreen[y].Add("▣");
                 }
                 else
                 {
-                    BlockList[y].Add("□");
+                    MainScreen[y].Add("□");
                 }
             }
         }

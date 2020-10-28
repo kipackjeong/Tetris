@@ -7,9 +7,11 @@ using System.Xml;
 
 public class StaticScreen // layout that does not change.
 {
-    public static Point BasicGrid = new Point(10,-8);
 
-    #region Fields
+    #region Fields/ Properties
+
+    public static string PlayerName;
+    public static Point BasicGrid = new Point(10, -8);
     private readonly StringBuilder _horBorder = new StringBuilder();
     private readonly StringBuilder _verBorder = new StringBuilder();
     private readonly StringBuilder _horOuter = new StringBuilder();
@@ -150,15 +152,17 @@ public class StaticScreen // layout that does not change.
 
     public void GameStart()
     {
+        
+        // Ask user to start
         Console.ForegroundColor = ConsoleColor.White;
         Console.SetCursorPosition(13 + BasicGrid.X, 25 + BasicGrid.Y);
         Console.WriteLine("Want to Start?");
         Console.SetCursorPosition(18 + BasicGrid.X, 27 + BasicGrid.Y);
         Console.WriteLine("Y/N");
-        Console.SetCursorPosition(19 + BasicGrid.X, 28 + BasicGrid.Y);
-        var answer = Console.ReadLine();
-        
-        if (answer.ToLower() == "y")
+        Console.SetCursorPosition(18 + BasicGrid.X, 27 + BasicGrid.Y);
+        Console.CursorVisible = false;
+        var answer = Console.ReadKey();
+        if (answer.Key == ConsoleKey.Y)
         {
             _runGame = true;
         }
@@ -166,6 +170,11 @@ public class StaticScreen // layout that does not change.
         {
             return;
         }
+        // set Playername before starting.
+        Console.SetCursorPosition(12 + BasicGrid.X, 27 + BasicGrid.Y);
+        Console.WriteLine("Enter your name: ");
+        Console.SetCursorPosition(12 + BasicGrid.X, 28 + BasicGrid.Y);
+        PlayerName = Console.ReadLine();
     }
     public void GameOver()
     {
@@ -174,9 +183,9 @@ public class StaticScreen // layout that does not change.
         Console.ForegroundColor = ConsoleColor.White;
         Console.Write("GAME OVER");
         Console.ReadLine();
-        Console.SetCursorPosition(15 + BasicGrid.X, 25 + BasicGrid.Y);
+        Console.SetCursorPosition(11 + BasicGrid.X, 25 + BasicGrid.Y);
         Console.Write("Try One More Time?");
-        Console.SetCursorPosition(15 + BasicGrid.X, 26 + BasicGrid.Y);
+        Console.SetCursorPosition(18 + BasicGrid.X, 26 + BasicGrid.Y);
         Console.Write("Y/N");
         while (answer != "n" && answer != "y")
         {

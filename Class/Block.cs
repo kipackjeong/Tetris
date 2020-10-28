@@ -74,12 +74,11 @@ public partial class Block
     {
         _curBlockType = (BLOCKTYPE)_rand.Next(0, 7);
         _curBlockDir = (BLOCKDIR)_rand.Next(0, 4);
-
     }
 
     private void SettingBlock(BLOCKTYPE type, BLOCKDIR dir)
     {
-        _arr = AllBLock[(int)type][(int)dir]; 
+        _arr = AllBlock[(int)type][(int)dir]; 
         GetMaxHeight(_arr);
         GetMaxLength(_arr);
     }
@@ -99,7 +98,13 @@ public partial class Block
             }
         }
     }
-
+    public void IsDead(int y)
+    {
+        if (_y + y - 1 == 0) // if block's height exceeds the screen.
+        {
+            blockAlive = false;
+        }
+    }
     public void Reset()
     {
         CreateRandBlock(); // generate random block Type and DIR
@@ -172,11 +177,11 @@ public partial class Block
         string[][] nextBlock;
         if ((int)_curBlockDir < 3)
         {
-            nextBlock = AllBLock[(int)_curBlockType][(int)_curBlockDir + 1];
+            nextBlock = AllBlock[(int)_curBlockType][(int)_curBlockDir + 1];
         }
         else
         {
-            nextBlock = AllBLock[(int)_curBlockType][0];
+            nextBlock = AllBlock[(int)_curBlockType][0];
         }
 
         var nextBMaxLength = NextBlockLength(nextBlock);
@@ -209,10 +214,6 @@ public partial class Block
         }
         return maxLength;
     }
-    #endregion
-
-
-    //////WORK ON THIS//////
     public Point ScanPoint()
     {
         int endpoint = 21;
@@ -246,11 +247,11 @@ public partial class Block
         {
             for (var x = _x; x < _x + _maxLength; ++x)
             {
-                if (_stackScr.BlockList[y][x] == "▦") // found a stacked block below current block
+                if (_stackScr.MainScreen[y][x] == "▦") // found a stacked block below current block
                 {
                     if (!foundBlock)
                     {
-                        XY.X = x;
+                        XY.X = x; // highest location where ground block is at.
                         XY.Y = y;
                         foundBlock = true;
                     }
@@ -277,9 +278,12 @@ public partial class Block
         }
         return XY;
     }
-    private void GetMaxHeight(string[][] Block)
+    #endregion
+    
+    #region GetMax
+        private void GetMaxHeight(string[][] Block)
     {
-        _maxHeight =  Block.Length;
+        _maxHeight = Block.Length;
     }
     private void GetMaxLength(string[][] Block)
     {
@@ -292,8 +296,12 @@ public partial class Block
             }
         }
 
-        _maxLength =  maxLength;
+        _maxLength = maxLength;
     }
+    #endregion
+
+    #region Movement
+
     public void Move(int i)
     {
         Console.SetCursorPosition(48 + StaticScreen.BasicGrid.X, 32 + StaticScreen.BasicGrid.Y);
@@ -385,20 +393,9 @@ public partial class Block
     public void QuickDown()
     {
         var point = ScanPoint();
-
-        //if (_stackScr.BlockList[point.Y][point.X] == "▦")
-        //{
-        //    _y = point.Y - 2;
-        //}
-
         _y = point.Y;
-    }
+    } 
+    #endregion
 
-    public void IsDead(int y)
-    {
-        if (_y + y - 1 == 0) // if block's height exceeds the screen.
-        {
-            blockAlive = false;
-        }
-    }
+
 }

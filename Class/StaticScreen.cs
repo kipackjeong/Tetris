@@ -183,8 +183,8 @@ public class StaticScreen // layout that does not change.
         Console.ForegroundColor = ConsoleColor.White;
         Console.Write("GAME OVER");
         Console.ReadLine();
-        Console.SetCursorPosition(11 + BasicGrid.X, 25 + BasicGrid.Y);
-        Console.Write("Try One More Time?");
+        Console.SetCursorPosition(14 + BasicGrid.X, 25 + BasicGrid.Y);
+        Console.Write("Try One More?");
         Console.SetCursorPosition(18 + BasicGrid.X, 26 + BasicGrid.Y);
         Console.Write("Y/N");
         while (answer != "n" && answer != "y")

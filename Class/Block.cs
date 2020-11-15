@@ -25,9 +25,9 @@ public partial class Block
     #region field/ prop
     
     //block grid (x,y)
-    private int _x = 5;
-    private int _y = 0;
-    public Point XY;
+    private int _currentBlockGridX = 5;
+    private int _currentBlockGridY = 0;
+    public Point GroundBlockGrid;
 
 
     // Blocks container.
@@ -49,7 +49,6 @@ public partial class Block
     // condition
     private bool _canItTurn = true;
     public bool blockAlive = true;
-    
     #endregion
 
 
@@ -91,7 +90,7 @@ public partial class Block
             {
                 if (_arr[y][x] == "▦")
                 {
-                    _stackScr.SetBlock(_y + y -1 , _x + x, "▦");
+                    _stackScr.SetBlock(_currentBlockGridY + y -1 , _currentBlockGridX + x, "▦");
                     IsDead(y);
                 }
                
@@ -100,7 +99,7 @@ public partial class Block
     }
     public void IsDead(int y)
     {
-        if (_y + y - 1 == 0) // if block's height exceeds the screen.
+        if (_currentBlockGridY + y - 1 <= 0) // if block's height exceeds the screen.
         {
             blockAlive = false;
         }
@@ -109,8 +108,8 @@ public partial class Block
     {
         CreateRandBlock(); // generate random block Type and DIR
         // reset block's position
-        _x = 5;
-        _y = 0;
+        _currentBlockGridX = 5;
+        _currentBlockGridY = 0;
 
         SettingBlock(_curBlockType,_curBlockDir); // sets on the screen//
     }
@@ -124,7 +123,7 @@ public partial class Block
                 if (_arr[y][x] == "▦")
                 {
                     //  if block is at bottom line         or       block present right below.
-                    if (_stackScr.ScrSizeY == y + _y || _stackScr.IsBlock(y + _y, x + _x, "▦"))
+                    if (_stackScr.ScrSizeY == y + _currentBlockGridY || _stackScr.IsBlock(y + _currentBlockGridY, x + _currentBlockGridX, "▦"))
                     {
                         Stack();
                         Reset();
@@ -144,7 +143,7 @@ public partial class Block
             {
                 if (_arr[y][x] == "▦")
                 {
-                    if (_stackScr.ScrSizeX == x + _x + 1 || _stackScr.IsBlock(y + _y, x + _x + 1, "▦"))
+                    if (_stackScr.ScrSizeX == x + _currentBlockGridX + 1 || _stackScr.IsBlock(y + _currentBlockGridY, x + _currentBlockGridX + 1, "▦"))
                     {
                         return true;
                     }
@@ -162,7 +161,7 @@ public partial class Block
             {
                 if (_arr[y][x] == "▦")
                 {
-                    if (0 == _x || _stackScr.IsBlock(y + _y, _x - 1, "▦"))
+                    if (0 == _currentBlockGridX || _stackScr.IsBlock(y + _currentBlockGridY, _currentBlockGridX - 1, "▦"))
                     {
                         return true;
                     }
@@ -187,7 +186,7 @@ public partial class Block
         var nextBMaxLength = NextBlockLength(nextBlock);
         if (RightSideCheck() || nextBMaxLength > _maxLength)
         {
-            if (_x + (nextBMaxLength - 1) >= 9)
+            if (_currentBlockGridX + (nextBMaxLength - 1) >= 9)
             {
                 _canItTurn = false;
             }
@@ -214,49 +213,48 @@ public partial class Block
         }
         return maxLength;
     }
-    public Point ScanPoint()
+    public int ScanPoint()
     {
-        int endpoint = 21;
-
-        int blockBaseXIndex = 15;
+        int blockBaseXIndex = 0;
         int blockBaseLength = 0;
         bool foundBlock = false;
         var alignsWBases = new HashSet<int>();
+        bool flatbottom = false;
+
 
         // Scan block
-        for (var x = 0; x < _arr[_maxHeight - 1].Length; ++x)
+        for (var x = 0; x < _arr[_maxHeight - 1].Length; x++)
         {
             if (_arr[_maxHeight - 1][x] == "▦")
             {
                 if (!foundBlock)
                 {
                     foundBlock = true;
-                    blockBaseXIndex = x;
+                    blockBaseXIndex = x + _currentBlockGridX;
                 }
                 blockBaseLength++;
                 
             }
         }
 
+        if (blockBaseLength > 1)
+            flatbottom = true;
         foundBlock = false;
 
 
         int count = 0;
         // Scan Ground
-        for (var y = _y + _maxLength; y < _stackScr.ScrSizeY; ++y)
+        for (var y = _currentBlockGridY + _maxHeight; y < _stackScr.ScrSizeY; ++y)
         {
-            for (var x = _x; x < _x + _maxLength; ++x)
+            for (var x = _currentBlockGridX; x < _currentBlockGridX + _maxLength; ++x)
             {
                 if (_stackScr.MainScreen[y][x] == "▦") // found a stacked block below current block
                 {
-                    if (!foundBlock)
-                    {
-                        XY.X = x; // highest location where ground block is at.
-                        XY.Y = y;
-                        foundBlock = true;
-                    }
-
+                    GroundBlockGrid.X = x; // highest location where ground block is at.
+                    GroundBlockGrid.Y = y;
+                    foundBlock = true;
                     alignsWBases.Add(x);
+                    break;
 
                 }
             }
@@ -265,18 +263,27 @@ public partial class Block
             // check if x grid of highestgroundblock is same as the base of current block
         }
         if(!foundBlock)
-        {
-            XY.Y = _stackScr.ScrSizeY + 1 - _maxHeight;
+        { 
+            return _stackScr.ScrSizeY + 1 - _maxHeight;
         }
-        else if (alignsWBases.Contains(blockBaseXIndex) || blockBaseXIndex ==  XY.X)
+        else if (blockBaseXIndex ==  GroundBlockGrid.X)
         {
-            XY.Y = XY.Y - 1 - _maxHeight;
+            
+            if((_curBlockType == BLOCKTYPE.BT_J && _curBlockDir == BLOCKDIR.BD_B) || (_curBlockType == BLOCKTYPE.BT_L && _curBlockDir == BLOCKDIR.BD_B))
+            {
+                return GroundBlockGrid.Y - _maxHeight + 2;
+            }
+            return  GroundBlockGrid.Y - _maxHeight + 1;
+            
         }
         else
         {
-            XY.Y = XY.Y - _maxHeight + 1;
+            if(flatbottom)
+            {
+                return GroundBlockGrid.Y - _maxHeight + 1;
+            }
+            return  GroundBlockGrid.Y - _maxHeight + 2;
         }
-        return XY;
     }
     #endregion
     
@@ -315,14 +322,14 @@ public partial class Block
 
             if (!_canItTurn)
             {
-                _x = (_gameScr.ScrSizeX - (_maxLength));
+                _currentBlockGridX = (_gameScr.ScrSizeX - (_maxLength));
                 _canItTurn = true;
             }
             for (int y = 0; y < _arr.Length; ++y)
             {
                 for (int x = 0; x < _arr[y].Length; ++x)
                 {
-                    _gameScr.SetBlock(_y + y, _x + x, _arr[y][x]);
+                    _gameScr.SetBlock(_currentBlockGridY + y, _currentBlockGridX + x, _arr[y][x]);
                 }
             }
             // locates block grid
@@ -347,14 +354,14 @@ public partial class Block
             case ConsoleKey.A:
                 if ((LeftSideCheck()))
                     break;
-                _x -= 1;
+                _currentBlockGridX -= 1;
                 break;
 
             case ConsoleKey.D:
                 if (RightSideCheck())
                     break;
                 else
-                    _x += 1;
+                    _currentBlockGridX += 1;
                 break;
 
             case ConsoleKey.S:
@@ -387,13 +394,13 @@ public partial class Block
     {
         if (!DownCheck())
         {
-            _y++;
+            _currentBlockGridY++;
         }
     }
     public void QuickDown()
     {
         var point = ScanPoint();
-        _y = point.Y;
+        _currentBlockGridY = point;
     } 
     #endregion
 
